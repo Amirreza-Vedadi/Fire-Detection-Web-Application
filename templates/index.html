@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>سامانه تشخیص آتش | Fire Detection System</title>
+
+    <style>
+        /* ==========================================
+           CSS Variables for Theming
+           ========================================== */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-dark: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --success: #16a34a;
+            --warning: #ea580c;
+            --info: #0891b2;
+            
+            --header-height: 64px;
+            --transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-dark: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+        }
+
+        /* ==========================================
+           Base Styles
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==========================================
+           Header
+           ========================================== */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-icon {
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 1.25rem;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+        .icon-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ==========================================
+           Main Content
+           ========================================== */
+        .main {
+            flex: 1;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .page-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* ==========================================
+           Cards & Containers
+           ========================================== */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ==========================================
+           Tabs
+           ========================================== */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        .tab:hover {
+            background: var(--bg-primary);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ==========================================
+           Buttons
+           ========================================== */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: var(--danger-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-primary);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* ==========================================
+           Form Elements
+           ========================================== */
+        .form-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+        }
+
+        .file-input:hover {
+            border-color: var(--primary);
+            background: var(--bg-primary);
+        }
+
+        .file-input::file-selector-button {
+            padding: 0.5rem 1rem;
+            margin-inline-end: 1rem;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* ==========================================
+           Preview Area
+           ========================================== */
+        .preview-container {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem 2rem;
+            max-width: 400px;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .placeholder-text {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .preview-image,
+        .preview-video {
+            max-width: 100%;
+            max-height: 600px;
+            width: auto;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .preview-canvas {
+            display: none;
+        }
+
+        /* ==========================================
+           Status Messages
+           ========================================== */
+        .status-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        .status-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .status-info {
+            background: rgba(8, 145, 178, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(8, 145, 178, 0.3);
+        }
+
+        .status-success {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(22, 163, 74, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(234, 88, 12, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(234, 88, 12, 0.3);
+        }
+
+        .status-danger {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        /* ==========================================
+           Results Display
+           ========================================== */
+        .results-section {
+            margin-top: 1.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .detections-list {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .detection-item {
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .detection-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .detection-class {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detection-confidence {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        /* ==========================================
+           Utilities
+           ========================================== */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+
+        /* ==========================================
+           Loading Spinner
+           ========================================== */
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================
+           Footer
+           ========================================== */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        /* ==========================================
+           Responsive Design
+           ========================================== */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .preview-container {
+                min-height: 300px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* RTL/LTR specific adjustments */
+        [dir="rtl"] .file-input::file-selector-button {
+            margin-inline-end: 1rem;
+            margin-inline-start: 0;
+        }
+
+        [dir="ltr"] .file-input::file-selector-button {
+            margin-inline-start: 0;
+            margin-inline-end: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-brand">
+                <span class="header-icon">🔥</span>
+                <h1 class="header-title" data-i18n="app_title">سامانه تشخیص آتش</h1>
+            </div>
+            <div class="header-controls">
+                <button class="icon-btn" id="themeToggle" title="تغییر تم" aria-label="Toggle theme">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button class="icon-btn" id="langToggle" title="تغییر زبان" aria-label="Toggle language">
+                    <span id="langIcon">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2 class="page-title" data-i18n="dashboard_title">داشبورد تشخیص آتش</h2>
+            <p class="page-description" data-i18n="dashboard_description">
+                تصویر انتخاب کنید یا دوربین را روشن کنید تا مدل YOLO تشخیص اشیا را انجام دهد
+            </p>
+        </div>
+
+        <!-- Control Card -->
+        <div class="card">
+            <!-- Mode Tabs -->
+            <div class="tabs">
+                <button class="tab active" id="imageTab" data-i18n="tab_image">تحلیل تصویر</button>
+                <button class="tab" id="cameraTab" data-i18n="tab_camera">دوربین زنده</button>
+            </div>
+
+            <!-- Image Mode -->
+            <div id="imageMode">
+                <div class="form-field">
+                    <label class="form-label" for="imageFile" data-i18n="label_select_image">انتخاب تصویر</label>
+                    <input 
+                        type="file" 
+                        id="imageFile" 
+                        class="file-input" 
+                        accept="image/*"
+                        aria-describedby="fileHelp"
+                    >
+                    <small id="fileHelp" class="text-muted" data-i18n="file_help">فرمت‌های پشتیبانی‌شده: JPG, PNG, WEBP (حداکثر 20 مگابایت)</small>
+                </div>
+                <div class="btn-group">
+                    <button id="analyzeBtn" class="btn btn-primary" disabled>
+                        <span data-i18n="btn_analyze">شروع تشخیص</span>
+                    </button>
+                    <button id="resetBtn" class="btn btn-secondary">
+                        <span data-i18n="btn_reset">پاک کردن</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Camera Mode -->
+            <div id="cameraMode" class="hidden">
+                <p class="mb-2" style="color: var(--text-secondary);" data-i18n="camera_permission">
+                    برای استفاده از دوربین، اجازه دسترسی مرورگر را تأیید کنید
+                </p>
+                <div class="btn-group">
+                    <button id="startCamera" class="btn btn-primary">
+                        <span data-i18n="btn_start_camera">روشن کردن دوربین</span>
+                    </button>
+                    <button id="stopCamera" class="btn btn-danger" disabled>
+                        <span data-i18n="btn_stop_camera">توقف دوربین</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title" data-i18n="preview_title">پیش‌نمایش و نتایج</h3>
+            </div>
+            
+            <div class="preview-container" id="previewContainer">
+                <div class="preview-placeholder" id="placeholder">
+                    <div class="placeholder-icon">📷</div>
+                    <p class="placeholder-text" data-i18n="placeholder_text">
+                        پیش‌نمایش تصویر و نتایج تشخیص اینجا نمایش داده می‌شود
+                    </p>
+                </div>
+                <img id="resultImage" class="preview-image hidden" alt="Annotated result">
+                <video id="cameraVideo" class="preview-video hidden" autoplay playsinline muted></video>
+                <canvas id="captureCanvas" class="preview-canvas"></canvas>
+            </div>
+
+            <!-- Status Message -->
+            <div id="statusMessage" class="status-message status-info">
+                <span class="status-icon">ℹ️</span>
+                <span data-i18n="status_ready">آماده دریافت ورودی</span>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-section hidden">
+                <div class="results-grid">
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="stat_total">تعداد کل تشخیص</div>
+                        <div class="stat-value" id="statTotal">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" data-i18n="stat_fire">وضعیت آتش</div>
+                        <div class="stat-value" id="statFire">—</div>
+                    </div>
+                </div>
+
+                <!-- Detections List -->
+                <div id="detectionsList" class="detections-list hidden">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p data-i18n="footer_disclaimer">
+            این سامانه ابزار کمکی است و جایگزین تجهیزات ایمنی و سامانه هشدار حریق تأییدشده نیست
+        </p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // Translation Dictionary
+        // ==========================================
+        const translations = {
+            fa: {
+                app_title: 'سامانه تشخیص آتش',
+                dashboard_title: 'داشبورد تشخیص آتش',
+                dashboard_description: 'تصویر انتخاب کنید یا دوربین را روشن کنید تا مدل YOLO تشخیص اشیا را انجام دهد',
+                tab_image: 'تحلیل تصویر',
+                tab_camera: 'دوربین زنده',
+                label_select_image: 'انتخاب تصویر',
+                file_help: 'فرمت‌های پشتیبانی‌شده: JPG, PNG, WEBP (حداکثر 20 مگابایت)',
+                btn_analyze: 'شروع تشخیص',
+                btn_reset: 'پاک کردن',
+                camera_permission: 'برای استفاده از دوربین، اجازه دسترسی مرورگر را تأیید کنید',
+                btn_start_camera: 'روشن کردن دوربین',
+                btn_stop_camera: 'توقف دوربین',
+                preview_title: 'پیش‌نمایش و نتایج',
+                placeholder_text: 'پیش‌نمایش تصویر و نتایج تشخیص اینجا نمایش داده می‌شود',
+                status_ready: 'آماده دریافت ورودی',
+                status_select_image: 'تصویر انتخاب شد. برای تشخیص کلیک کنید',
+                status_analyzing: 'در حال تحلیل تصویر...',
+                status_camera_starting: 'در حال روشن کردن دوربین...',
+                status_camera_active: 'دوربین فعال است. در حال بررسی فریم‌ها...',
+                status_camera_stopped: 'دوربین متوقف شد',
+                status_processing: 'در حال پردازش فریم...',
+                status_fire_detected: '⚠️ هشدار: کلاس آتش شناسایی شد',
+                status_no_fire: '✓ تحلیل انجام شد. کلاس آتش شناسایی نشد',
+                status_no_detections: 'تحلیل انجام شد. هیچ شیئی تشخیص داده نشد',
+                error_prefix: 'خطا: ',
+                error_no_file: 'لطفاً ابتدا یک تصویر انتخاب کنید',
+                error_camera_not_supported: 'دسترسی به دوربین در این مرورگر پشتیبانی نمی‌شود',
+                error_camera_permission: 'دسترسی به دوربین رد شد. لطفاً در تنظیمات مرورگر اجازه دهید',
+                error_camera_failed: 'دسترسی به دوربین ممکن نشد',
+                error_network: 'خطای شبکه. لطفاً اتصال خود را بررسی کنید',
+                error_server: 'خطای سرور. لطفاً دوباره تلاش کنید',
+                stat_total: 'تعداد کل تشخیص',
+                stat_fire: 'وضعیت آتش',
+                fire_yes: 'شناسایی شد ⚠️',
+                fire_no: 'شناسایی نشد ✓',
+                detections_title: 'جزئیات تشخیص‌ها:',
+                footer_disclaimer: 'این سامانه ابزار کمکی است و جایگزین تجهیزات ایمنی و سامانه هشدار حریق تأییدشده نیست',
+            },
+            en: {
+                app_title: 'Fire Detection System',
+                dashboard_title: 'Fire Detection Dashboard',
+                dashboard_description: 'Select an image or enable camera to perform YOLO object detection',
+                tab_image: 'Image Analysis',
+                tab_camera: 'Live Camera',
+                label_select_image: 'Select Image',
+                file_help: 'Supported formats: JPG, PNG, WEBP (max 20 MB)',
+                btn_analyze: 'Start Detection',
+                btn_reset: 'Clear',
+                camera_permission: 'To use the camera, approve browser permission when prompted',
+                btn_start_camera: 'Start Camera',
+                btn_stop_camera: 'Stop Camera',
+                preview_title: 'Preview & Results',
+                placeholder_text: 'Image preview and detection results will be displayed here',
+                status_ready: 'Ready for input',
+                status_select_image: 'Image selected. Click to detect',
+                status_analyzing: 'Analyzing image...',
+                status_camera_starting: 'Starting camera...',
+                status_camera_active: 'Camera active. Processing frames...',
+                status_camera_stopped: 'Camera stopped',
+                status_processing: 'Processing frame...',
+                status_fire_detected: '⚠️ Warning: Fire class detected',
+                status_no_fire: '✓ Analysis complete. No fire class detected',
+                status_no_detections: 'Analysis complete. No objects detected',
+                error_prefix: 'Error: ',
+                error_no_file: 'Please select an image first',
+                error_camera_not_supported: 'Camera access not supported in this browser',
+                error_camera_permission: 'Camera permission denied. Please allow in browser settings',
+                error_camera_failed: 'Failed to access camera',
+                error_network: 'Network error. Please check your connection',
+                error_server: 'Server error. Please try again',
+                stat_total: 'Total Detections',
+                stat_fire: 'Fire Status',
+                fire_yes: 'Detected ⚠️',
+                fire_no: 'Not Detected ✓',
+                detections_title: 'Detection Details:',
+                footer_disclaimer: 'This system is an assistive tool and is not a replacement for certified safety equipment and fire alarm systems',
+            }
+        };
+
+        // ==========================================
+        // Language Management
+        // ==========================================
+        let currentLang = localStorage.getItem('lang') || 'fa';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update language toggle button
+            document.getElementById('langIcon').textContent = lang === 'fa' ? 'EN' : 'FA';
+        }
+
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // ==========================================
+        // Theme Management
+        // ==========================================
+        let currentTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('theme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ==========================================
+        // DOM Elements
+        // ==========================================
+        const $ = id => document.getElementById(id);
+        
+        const elements = {
+            imageTab: $('imageTab'),
+            cameraTab: $('cameraTab'),
+            imageMode: $('imageMode'),
+            cameraMode: $('cameraMode'),
+            imageFile: $('imageFile'),
+            analyzeBtn: $('analyzeBtn'),
+            resetBtn: $('resetBtn'),
+            startCamera: $('startCamera'),
+            stopCamera: $('stopCamera'),
+            placeholder: $('placeholder'),
+            resultImage: $('resultImage'),
+            cameraVideo: $('cameraVideo'),
+            captureCanvas: $('captureCanvas'),
+            statusMessage: $('statusMessage'),
+            resultsSection: $('resultsSection'),
+            detectionsList: $('detectionsList'),
+            statTotal: $('statTotal'),
+            statFire: $('statFire'),
+            themeToggle: $('themeToggle'),
+            langToggle: $('langToggle'),
+        };
+
+        // ==========================================
+        // Application State
+        // ==========================================
+        let state = {
+            stream: null,
+            liveTimer: null,
+            processing: false,
+            currentMode: 'image',
+            imagePreviewUrl: null,
+        };
+
+        // ==========================================
+        // Status Message Display
+        // ==========================================
+        function showStatus(message, type = 'info') {
+            const statusEl = elements.statusMessage;
+            statusEl.className = `status-message status-${type}`;
+            
+            const icons = {
+                info: 'ℹ️',
+                success: '✓',
+                warning: '⚠️',
+                danger: '✗'
+            };
+            
+            statusEl.innerHTML = `
+                <span class="status-icon">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+        }
+
+        // ==========================================
+        // Mode Switching
+        // ==========================================
+        function setMode(mode) {
+            state.currentMode = mode;
+            const isImage = mode === 'image';
+            
+            elements.imageMode.classList.toggle('hidden', !isImage);
+            elements.cameraMode.classList.toggle('hidden', isImage);
+            
+            elements.imageTab.classList.toggle('active', isImage);
+            elements.cameraTab.classList.toggle('active', !isImage);
+            
+            if (!isImage) {
+                stopCamera();
+            }
+        }
+
+        // ==========================================
+        // Image Selection & Preview
+        // ==========================================
+        elements.imageFile.addEventListener('change', () => {
+            const file = elements.imageFile.files[0];
+            
+            elements.analyzeBtn.disabled = !file;
+            
+            if (!file) {
+                return;
+            }
+            
+            // Stop camera if running
+            stopCamera();
+            
+            // Clean up previous preview URL
+            if (state.imagePreviewUrl) {
+                URL.revokeObjectURL(state.imagePreviewUrl);
+            }
+            
+            // Create new preview
+            state.imagePreviewUrl = URL.createObjectURL(file);
+            
+            elements.resultImage.src = state.imagePreviewUrl;
+            elements.resultImage.classList.remove('hidden');
+            elements.cameraVideo.classList.add('hidden');
+            elements.placeholder.classList.add('hidden');
+            elements.resultsSection.classList.add('hidden');
+            
+            showStatus(t('status_select_image'), 'info');
+        });
+
+        // ==========================================
+        // Image Analysis
+        // ==========================================
+        async function analyzeImage() {
+            const file = elements.imageFile.files[0];
+            
+            if (!file) {
+                showStatus(t('error_no_file'), 'danger');
+                return;
+            }
+            
+            if (state.processing) {
+                return;
+            }
+            
+            state.processing = true;
+            elements.analyzeBtn.disabled = true;
+            elements.analyzeBtn.innerHTML = `<span class="spinner"></span> <span>${t('status_analyzing')}</span>`;
+            
+            showStatus(t('status_analyzing'), 'info');
+            
+            try {
+                const result = await sendFrame(file, '/predict');
+                displayResults(result);
+                
+            } catch (error) {
+                handleError(error);
+                
+            } finally {
+                state.processing = false;
+                elements.analyzeBtn.disabled = false;
+                elements.analyzeBtn.innerHTML = `<span>${t('btn_analyze')}</span>`;
+            }
+        }
+
+        elements.analyzeBtn.addEventListener('click', analyzeImage);
+
+        // ==========================================
+        // Reset Function
+        // ==========================================
+        function resetInterface() {
+            // Stop camera
+            stopCamera();
+            
+            // Clear file input
+            elements.imageFile.value = '';
+            elements.analyzeBtn.disabled = true;
+            
+            // Clean up preview URL
+            if (state.imagePreviewUrl) {
+                URL.revokeObjectURL(state.imagePreviewUrl);
+                state.imagePreviewUrl = null;
+            }
+            
+            // Hide all previews
+            elements.resultImage.classList.add('hidden');
+            elements.cameraVideo.classList.add('hidden');
+            elements.resultsSection.classList.add('hidden');
+            elements.placeholder.classList.remove('hidden');
+            
+            // Reset status
+            showStatus(t('status_ready'), 'info');
+        }
+
+        elements.resetBtn.addEventListener('click', resetInterface);
+
+        // ==========================================
+        // Camera Management
+        // ==========================================
+        async function startCamera() {
+            if (state.stream) {
+                return;
+            }
+            
+            if (!navigator.mediaDevices?.getUserMedia) {
+                showStatus(t('error_camera_not_supported'), 'danger');
+                return;
+            }
+            
+            elements.startCamera.disabled = true;
+            elements.startCamera.innerHTML = `<span class="spinner"></span> <span>${t('status_camera_starting')}</span>`;
+            showStatus(t('status_camera_starting'), 'info');
+            
+            try {
+                state.stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' },
+                    audio: false
+                });
+                
+                elements.cameraVideo.srcObject = state.stream;
+                elements.cameraVideo.classList.remove('hidden');
+                elements.resultImage.classList.add('hidden');
+                elements.placeholder.classList.add('hidden');
+                
+                elements.startCamera.disabled = true;
+                elements.stopCamera.disabled = false;
+                
+                await elements.cameraVideo.play();
+                
+                showStatus(t('status_camera_active'), 'success');
+                
+                // Start processing frames
+                state.liveTimer = setInterval(processCameraFrame, 1500);
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                stopCamera();
+                
+                if (error.name === 'NotAllowedError') {
+                    showStatus(t('error_camera_permission'), 'danger');
+                } else {
+                    showStatus(t('error_camera_failed') + ': ' + error.message, 'danger');
+                }
+                
+            } finally {
+                elements.startCamera.innerHTML = `<span>${t('btn_start_camera')}</span>`;
+                elements.startCamera.disabled = false;
+            }
+        }
+
+        function stopCamera() {
+            // Clear interval
+            if (state.liveTimer) {
+                clearInterval(state.liveTimer);
+                state.liveTimer = null;
+            }
+            
+            // Stop all tracks
+            if (state.stream) {
+                state.stream.getTracks().forEach(track => track.stop());
+                state.stream = null;
+            }
+            
+            // Reset UI
+            elements.cameraVideo.srcObject = null;
+            elements.cameraVideo.classList.add('hidden');
+            
+            elements.startCamera.disabled = false;
+            elements.stopCamera.disabled = true;
+            
+            state.processing = false;
+        }
+
+        async function processCameraFrame() {
+            if (state.processing || !state.stream) {
+                return;
+            }
+            
+            const video = elements.cameraVideo;
+            
+            if (!video.videoWidth) {
+                return;
+            }
+            
+            state.processing = true;
+            
+            try {
+                const canvas = elements.captureCanvas;
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                const blob = await new Promise(resolve => {
+                    canvas.toBlob(resolve, 'image/jpeg', 0.85);
+                });
+                
+                if (!blob) {
+                    throw new Error('Failed to create blob from canvas');
+                }
+                
+                const result = await sendFrame(blob, '/predict-frame');
+                
+                // Only update if camera is still active
+                if (state.stream) {
+                    displayResults(result, true);
+                }
+                
+            } catch (error) {
+                console.error('Frame processing error:', error);
+                // Don't stop camera on single frame error
+                
+            } finally {
+                state.processing = false;
+            }
+        }
+
+        elements.startCamera.addEventListener('click', startCamera);
+        elements.stopCamera.addEventListener('click', () => {
+            stopCamera();
+            showStatus(t('status_camera_stopped'), 'info');
+            elements.placeholder.classList.remove('hidden');
+        });
+
+        // ==========================================
+        // API Communication
+        // ==========================================
+        async function sendFrame(blob, endpoint) {
+            const formData = new FormData();
+            formData.append('file', blob, 'frame.jpg');
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.detail || 'Server error');
+            }
+            
+            return data;
+        }
+
+        // ==========================================
+        // Results Display
+        // ==========================================
+        function displayResults(data, isLiveCamera = false) {
+            // Update image
+            elements.resultImage.src = data.image;
+            elements.resultImage.classList.remove('hidden');
+            elements.placeholder.classList.add('hidden');
+            
+            // Keep camera visible in live mode
+            if (isLiveCamera) {
+                elements.cameraVideo.classList.remove('hidden');
+            } else {
+                elements.cameraVideo.classList.add('hidden');
+            }
+            
+            // Update statistics
+            elements.statTotal.textContent = data.count || 0;
+            elements.statFire.textContent = data.fire_detected ? t('fire_yes') : t('fire_no');
+            
+            // Show results section
+            elements.resultsSection.classList.remove('hidden');
+            
+            // Update status message
+            if (data.fire_detected) {
+                showStatus(t('status_fire_detected'), 'warning');
+            } else if (data.count > 0) {
+                showStatus(t('status_no_fire'), 'success');
+            } else {
+                showStatus(t('status_no_detections'), 'info');
+            }
+            
+            // Display detections list
+            if (data.detections && data.detections.length > 0) {
+                displayDetectionsList(data.detections);
+            } else {
+                elements.detectionsList.classList.add('hidden');
+            }
+        }
+
+        function displayDetectionsList(detections) {
+            elements.detectionsList.classList.remove('hidden');
+            
+            const html = detections.map(det => `
+                <div class="detection-item">
+                    <div class="detection-header">
+                        <span class="detection-class">${escapeHtml(det.name)}</span>
+                        <span class="detection-confidence">${det.confidence_percent}%</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            elements.detectionsList.innerHTML = html;
+        }
+
+        // ==========================================
+        // Error Handling
+        // ==========================================
+        function handleError(error) {
+            console.error('Error:', error);
+            
+            let message = t('error_prefix');
+            
+            if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                message += t('error_network');
+            } else if (error.message) {
+                message += error.message;
+            } else {
+                message += t('error_server');
+            }
+            
+            showStatus(message, 'danger');
+        }
+
+        // ==========================================
+        // Utility Functions
+        // ==========================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==========================================
+        // Event Listeners
+        // ==========================================
+        elements.imageTab.addEventListener('click', () => {
+            setMode('image');
+            showStatus(t('status_ready'), 'info');
+        });
+
+        elements.cameraTab.addEventListener('click', () => {
+            setMode('camera');
+            showStatus(t('status_ready'), 'info');
+        });
+
+        elements.themeToggle.addEventListener('click', () => {
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        elements.langToggle.addEventListener('click', () => {
+            setLanguage(currentLang === 'fa' ? 'en' : 'fa');
+        });
+
+        // Stop camera when leaving page
+        window.addEventListener('beforeunload', stopCamera);
+
+        // ==========================================
+        // Initialization
+        // ==========================================
+        setLanguage(currentLang);
+        setTheme(currentTheme);
+        showStatus(t('status_ready'), 'info');
+    </script>
+</body>
+</html>
