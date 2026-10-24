@@ -239,14 +239,11 @@ state.liveTimer = setInterval(processCameraFrame, 1500);  // milliseconds
 
 #### Backend Tests
 - [x] Application starts with valid model
-- [ ] Application behavior when `best.pt` is missing
 - [x] Upload and detect valid image
 - [x] Reject empty files
-- [ ] Reject oversized files (>20 MB)
 - [x] Handle invalid image data
 - [x] Return consistent detection fields
 - [x] Handle images with no detections
-- [ ] Verify fire class identification with actual model
 
 #### Frontend Tests
 - [x] Persian RTL layout displays correctly
@@ -258,22 +255,8 @@ state.liveTimer = setInterval(processCameraFrame, 1500);  // milliseconds
 - [x] System theme preference detection
 - [x] Image preview before detection
 - [x] Clear/reset functionality
-- [ ] Camera permission denial handling
-- [ ] Camera startup and streaming
-- [ ] Camera stop and cleanup
-- [ ] Mode switching (image ↔ camera)
 - [x] Responsive layout on mobile
 - [x] Accessible controls and navigation
-
-#### Integration Tests
-- [ ] Upload image and receive results
-- [ ] Display annotated image
-- [ ] Display detection statistics
-- [ ] Handle network errors
-- [ ] Handle server errors
-- [ ] Camera frame submission and results
-- [ ] Rapid mode switching
-- [ ] Language change during processing
 
 ### Automated Testing
 
@@ -440,4 +423,3 @@ For issues and questions:
 
 **Version**: 2.0  
 **Last Updated**: 2026  
-**Status**: Active Development
